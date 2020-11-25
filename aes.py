@@ -81,7 +81,7 @@ def text2matrix(text):
         if i % 4 == 0:
             matrix.append([byte])
         else:
-            matrix[i / 4].append(byte)
+            matrix[i // 4].append(byte)
     return matrix
 
 
@@ -95,6 +95,8 @@ def matrix2text(matrix):
 
 class AES:
     def __init__(self, master_key):
+        if master_key < 0:
+            raise Exception('Key can not be < 0')
         self.change_key(master_key)
 
     def change_key(self, master_key):
@@ -106,7 +108,7 @@ class AES:
             if i % 4 == 0:
                 byte = self.round_keys[i - 4][0]        \
                      ^ Sbox[self.round_keys[i - 1][1]]  \
-                     ^ Rcon[i / 4]
+                     ^ Rcon[i // 4]
                 self.round_keys[i].append(byte)
 
                 for j in range(1, 4):
@@ -122,6 +124,8 @@ class AES:
         # print self.round_keys
 
     def encrypt(self, plaintext):
+        if plaintext < 0:
+            raise Exception('Plaintext can not be < 0')
         self.plain_state = text2matrix(plaintext)
 
         self.__add_round_key(self.plain_state, self.round_keys[:4])
